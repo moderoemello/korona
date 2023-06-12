@@ -45,7 +45,7 @@
         .navbar li a {
             color: #fff;
             text-decoration: none;
-            padding: 5px 10px;
+            padding: 1px 5px;
             border-radius: 5px;
         }
 
@@ -61,8 +61,10 @@
         }
 
         .form-container {
-            flex: 1;
-            padding-right: 20px;
+        flex: 1;
+        padding-right: 20px;
+        max-width: calc(100vw - 40px); /* Limit width to viewport width minus padding */
+        margin: 0 auto; /* Center the container */
         }
 
         .response-container {
@@ -71,11 +73,10 @@
         }
 
         form {
-            width: 100%;
-            max-width: 600px;
+            width: 80%;
             margin: 0 auto;
             padding: 20px;
-            background-color: #fff;
+            background-color: #ffffff;
             border-radius: 5px;
             box-shadow: 0px 0px 10px rgba(204, 102, 0, 0.7); /* Dark orange shadow */
         }
@@ -144,11 +145,7 @@
         }
 
         .supplier-field {
-            display: none;
-        }
-
-        #toggleSupplierFieldsBtn {
-            margin-top: 10px;
+            display: block; /* Show the supplier fields by default */
         }
     </style>
 </head>
@@ -195,24 +192,20 @@
             <label for="priceGroup">Price group number:</label>
             <input type="text" id="priceGroup" name="priceGroup" value="1">
 
-            <button type="button" class="btn" id="toggleSupplierFieldsBtn">Toggle Supplier Fields</button>
+            <label for="supplier_number">Supplier number:</label>
+            <input type="text" id="supplier_number" name="supplier_number" value="">
 
-            <div class="supplier-field">
-                <label for="supplier_number">Supplier number:</label>
-                <input type="text" id="supplier_number" name="supplier_number" value="">
+            <label for="orderCode">Order code:</label>
+            <input type="text" id="orderCode" name="orderCode" value="8888">
 
-                <label for="orderCode">Order code:</label>
-                <input type="text" id="orderCode" name="orderCode" value="8888">
+            <label for="supplier_value">Supplier value:</label>
+            <input type="text" id="supplier_value" name="supplier_value" value="1">
 
-                <label for="supplier_value">Supplier value:</label>
-                <input type="text" id="supplier_value" name="supplier_value" value="1">
+            <label for="containerSize">Container size:</label>
+            <input type="text" id="containerSize" name="containerSize" value="1">
 
-                <label for="containerSize">Container size:</label>
-                <input type="text" id="containerSize" name="containerSize" value="1">
-
-                <label for="supplier_description">Supplier description:</label>
-                <input type="text" id="supplier_description" name="supplier_description" value="">
-            </div>
+            <label for="supplier_description">Supplier description:</label>
+            <input type="text" id="supplier_description" name="supplier_description" value="">
 
             <input type="submit" value="Submit">
         </form>
@@ -226,25 +219,6 @@
 </div>
 
 <script>
-    document.getElementById('toggleSupplierFieldsBtn').addEventListener('click', function() {
-        var supplierFields = document.getElementsByClassName('supplier-field');
-        for (var i = 0; i < supplierFields.length; i++) {
-            if (supplierFields[i].style.display === 'none') {
-                supplierFields[i].style.display = 'block';
-            } else {
-                supplierFields[i].style.display = 'none';
-            }
-        }
-    });
-
-    // Hide the supplier fields on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        var supplierFields = document.getElementsByClassName('supplier-field');
-        for (var i = 0; i < supplierFields.length; i++) {
-            supplierFields[i].style.display = 'none';
-        }
-    });
-
     document.getElementById('productForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
@@ -287,20 +261,19 @@
                         "number": priceGroup
                     }
                 }
+            ],
+            "supplierPrices": [
+                {
+                    "supplier": {
+                        "number": document.getElementById('supplier_number').value
+                    },
+                    "orderCode": document.getElementById('orderCode').value,
+                    "value": parseFloat(document.getElementById('supplier_value').value),
+                    "containerSize": parseFloat(document.getElementById('containerSize').value),
+                    "description": document.getElementById('supplier_description').value
+                }
             ]
         }];
-
-        let supplierFields = {
-            "supplier": {
-                "number": document.getElementById('supplier_number').value
-            },
-            "orderCode": document.getElementById('orderCode').value,
-            "value": parseFloat(document.getElementById('supplier_value').value),
-            "containerSize": parseFloat(document.getElementById('containerSize').value),
-            "description": document.getElementById('supplier_description').value
-        };
-
-        product[0].supplierPrices = [supplierFields];
 
         let url = "https://167.koronacloud.com/web/api/v3/accounts/dd0b749a-56f5-4185-a782-590230a8530f/products";
         let username = "support";
