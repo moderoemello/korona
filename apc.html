@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFEFD5; /* Light orange background */
+        }
+
+        h2 {
+            text-align: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+        }
+
+        .navbar-brand {
+            margin-right: auto;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+
+        .search-container {
+            width: 100%;
+            padding: 10px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(204, 102, 0, 0.7);
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .product-list {
+            width: 100%;
+            max-height: 200px;
+            overflow-y: scroll;
+            padding: 10px;
+            background-color: #fff;
+            margin-top: 10px;
+            box-shadow: 0px 0px 10px rgba(204, 102, 0, 0.7);
+        }
+
+        .product-item {
+            cursor: pointer;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .product-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .selected {
+            background-color: #f9f9f9;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(204, 102, 0, 0.7);
+        }
+
+        .response-container {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(204, 102, 0, 0.7);
+        }
+
+        label {
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="text"] {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus {
+            box-shadow: 0 0 5px #FF8C00;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #444;
+        }
+
+        .response-box {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            color: #333;
+            white-space: pre-wrap;
+        }
+
+        .response-box p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<h2>KORONA.cloud Product Lookup</h2>
+
+<div class="navbar">
+    <a class="navbar-brand" href="#">KORONA.cloud</a>
+</div>
+
+<div class="container">
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-bar" placeholder="Search for a product">
+    </div>
+
+    <div class="product-list" id="productList"></div>
+
+    <div class="form-container">
+        <form id="productForm">
+            <label for="productIdInput">Enter Product ID:</label>
+            <input type="text" id="productIdInput" name="productId">
+
+            <input type="submit" value="Get Product">
+        </form>
+    </div>
+
+    <div class="response-container">
+        <div class="response-box" id="productResponse"></div>
+    </div>
+</div>
+
+<script>
+    const productList = document.getElementById('productList');
+    const searchInput = document.getElementById('searchInput');
+    const productIdInput = document.getElementById('productIdInput');
+    const productForm = document.getElementById('productForm');
+    const productResponse = document.getElementById('productResponse');
+    let products = [];
+
+    // Function to display products in the list
+    function displayProducts() {
+        productList.innerHTML = '';
+        products.forEach((product) => {
+            const productItem = document.createElement('div');
+            productItem.classList.add('product-item');
+            productItem.textContent = `${product.name} (${product.number})`;
+            productItem.addEventListener('click', () => {
+                selectProduct(product);
+            });
+            productList.appendChild(productItem);
+        });
+    }
+
+    // Function to select a product from the list
+    function selectProduct(product) {
+        productIdInput.value = product.number;
+    }
+
+    // Function to filter products based on search input
+    function filterProducts() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const filteredProducts = products.filter((product) =>
+            product.name.toLowerCase().includes(searchTerm) || product.number.toLowerCase().includes(searchTerm)
+        );
+        displayProducts(filteredProducts);
+    }
+
+    // Fetch product data from API
+    function fetchProducts() {
+        let url = "https://167.koronacloud.com/web/api/v3/accounts/dd0b749a-56f5-4185-a782-590230a8530f/products";
+        let username = "support";
+        let password = "support";
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa(username + ":" + password)
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            products = data.results;
+            displayProducts();
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+    // Fetch product details based on product ID
+    function fetchProductDetails(productId) {
+        let url = `https://167.koronacloud.com/web/api/v3/accounts/dd0b749a-56f5-4185-a782-590230a8530f/products/${productId}`;
+        let username = "support";
+        let password = "support";
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa(username + ":" + password)
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            const productDetails = JSON.stringify(data, null, 4);
+            productResponse.textContent = productDetails;
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+    // Event listener for search input
+    searchInput.addEventListener('input', filterProducts);
+
+    // Event listener for product form submission
+    productForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const productId = productIdInput.value;
+        fetchProductDetails(productId);
+    });
+
+    // Fetch products on page load
+    window.addEventListener('DOMContentLoaded', function() {
+        fetchProducts();
+    });
+</script>
+
+</body>
+</html>
