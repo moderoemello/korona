@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFEFD5; /* Light orange background */
+        }
+
+        h2 {
+            text-align: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+        }
+
+        .navbar-brand {
+            margin-right: auto;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            display: flex;
+        }
+
+        .navbar li {
+            margin-left: 10px;
+        }
+
+        .navbar li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .navbar li a:hover {
+            background-color: #444;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-top: 50px;
+        }
+
+        .form-container {
+            flex: 1;
+            padding-right: 20px;
+        }
+
+        .response-container {
+            flex: 1;
+            padding-left: 20px;
+        }
+
+        form {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(204, 102, 0, 0.7); /* Dark orange shadow */
+        }
+
+        label {
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="text"] {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: all 0.3s ease; /* Smooth transition */
+            width: 100%;
+            box-sizing: border-box; /* Include padding and border in width calculation */
+        }
+
+        input[type="text"]:focus {
+            box-shadow: 0 0 5px #FF8C00; /* Orange shadow when focused */
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #444;
+        }
+
+        .response-box {
+            max-width: 500px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        .response-box p {
+            margin: 0;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #444;
+        }
+
+        .supplier-field {
+            display: none;
+        }
+
+        #toggleSupplierFieldsBtn {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>KORONA.cloud Add Product</h2>
+
+<div class="navbar">
+    <a class="navbar-brand" href="#">KORONA.cloud</a>
+    <ul>
+        <li><a href="#" id="getCommodityGroupsBtn">Get Commodity Groups</a></li>
+        <li><a href="#" id="getSuppliersBtn">Get Suppliers</a></li>
+        <li><a href="#" id="getSectorsBtn">Get Sectors</a></li> <!-- Added button for Get Sectors -->
+    </ul>
+</div>
+
+<div class="container">
+    <div class="form-container">
+        <form id="productForm">
+            <label for="number">Product number:</label>
+            <input type="text" id="number" name="number" readonly>
+
+            <label for="assortment_number">Assortment number:</label>
+            <input type="text" id="assortment_number" name="assortment_number" value="1">
+
+            <label for="product_code">Product code:</label>
+            <input type="text" id="product_code" name="product_code">
+
+            <label for="commodity_group_number">Commodity group number:</label>
+            <input type="text" id="commodity_group_number" name="commodity_group_number" value="1">
+
+            <label for="name">Product name:</label>
+            <input type="text" id="name" name="name">
+
+            <label for="price_changable">Is price changeable? (yes/no):</label>
+            <input type="text" id="price_changable" name="price_changable" value="yes">
+
+            <label for="sector_number">Sector number:</label>
+            <input type="text" id="sector_number" name="sector_number" value="1">
+
+            <label for="values">Price:</label>
+            <input type="text" id="values" name="values">
+
+            <label for="priceGroup">Price group number:</label>
+            <input type="text" id="priceGroup" name="priceGroup" value="1">
+
+            <button type="button" class="btn" id="toggleSupplierFieldsBtn">Toggle Supplier Fields</button>
+
+            <div class="supplier-field">
+                <label for="supplier_number">Supplier number:</label>
+                <input type="text" id="supplier_number" name="supplier_number" value="">
+
+                <label for="orderCode">Order code:</label>
+                <input type="text" id="orderCode" name="orderCode" value="8888">
+
+                <label for="supplier_value">Supplier value:</label>
+                <input type="text" id="supplier_value" name="supplier_value" value="1">
+
+                <label for="containerSize">Container size:</label>
+                <input type="text" id="containerSize" name="containerSize" value="1">
+
+                <label for="supplier_description">Supplier description:</label>
+                <input type="text" id="supplier_description" name="supplier_description" value="">
+            </div>
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+    <div class="response-container">
+        <div class="response-box">
+            <p id="serverResponse"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('toggleSupplierFieldsBtn').addEventListener('click', function() {
+        var supplierFields = document.getElementsByClassName('supplier-field');
+        for (var i = 0; i < supplierFields.length; i++) {
+            if (supplierFields[i].style.display === 'none') {
+                supplierFields[i].style.display = 'block';
+            } else {
+                supplierFields[i].style.display = 'none';
+            }
+        }
+    });
+
+    // Hide the supplier fields on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        var supplierFields = document.getElementsByClassName('supplier-field');
+        for (var i = 0; i < supplierFields.length; i++) {
+            supplierFields[i].style.display = 'none';
+        }
+    });
+
+    document.getElementById('productForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Generate a random 7-digit number for the product number
+        let number = Math.floor(1000000 + Math.random() * 9000000).toString();
+
+        let assortment_number = document.getElementById('assortment_number').value;
+        let product_code = document.getElementById('product_code').value;
+        let commodity_group_number = document.getElementById('commodity_group_number').value;
+        let name = document.getElementById('name').value;
+        let price_changable = document.getElementById('price_changable').value.toLowerCase() === 'yes';
+        let sector_number = document.getElementById('sector_number').value;
+        let prices = document.getElementById('values').value;
+        let priceGroup = document.getElementById('priceGroup').value;
+
+        let currentDate = new Date().toISOString();
+        let validFrom = currentDate.slice(0, 19) + "+00:00"; // Format validFrom as "YYYY-MM-DDTHH:MM:SS+00:00"
+
+        let product = [{
+            "number": number,
+            "assortment": {
+                "number": assortment_number,
+            },
+            "codes": [{
+                "productCode": product_code,
+            }],
+            "commodityGroup": {
+                "number": commodity_group_number,
+            },
+            "name": name,
+            "priceChangable": price_changable,
+            "sector": {
+                "number": sector_number
+            },
+            "prices": [
+                {
+                    "value": prices,
+                    "validFrom": validFrom,
+                    "priceGroup": {
+                        "number": priceGroup
+                    }
+                }
+            ]
+        }];
+
+        let supplierFields = {
+            "supplier": {
+                "number": document.getElementById('supplier_number').value
+            },
+            "orderCode": document.getElementById('orderCode').value,
+            "value": parseFloat(document.getElementById('supplier_value').value),
+            "containerSize": parseFloat(document.getElementById('containerSize').value),
+            "description": document.getElementById('supplier_description').value
+        };
+
+        product[0].supplierPrices = [supplierFields];
+
+        let url = "https://167.koronacloud.com/web/api/v3/accounts/dd0b749a-56f5-4185-a782-590230a8530f/products";
+        let username = "support";
+        let password = "support";
+
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(product),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa(username + ":" + password)
+            },
+        })
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('serverResponse').innerText = "Response from server: " + data;
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    });
+
+    document.getElementById('getCommodityGroupsBtn').addEventListener('click', function() {
+        let url = "https://167.koronacloud.com/web/api/v3/accounts/dd0b749a-56f5-4185-a782-590230a8530f/commodityGroups";
+        let username = "support";
+        let password = "support";
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa(username + ":" + password)
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            let responseBox = document.getElementById('serverResponse');
+            responseBox.innerHTML = "<p>Commodity Groups:</p>";
+            data.results.forEach(group => {
+                responseBox.innerHTML += `<p>Name: ${group.name}, Number: ${group.number}</p>`;
+            });
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    });
+
+    document.getElementById('getSuppliersBtn').addEventListener('click', function() {
+        let url = "https://167.koronacloud.com/web/api/v3/accounts/dd0b749a-56f5-4185-a782-590230a8530f/suppliers";
+        let username = "support";
+        let password = "support";
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa(username + ":" + password)
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            let responseBox = document.getElementById('serverResponse');
+            responseBox.innerHTML = "<p>Suppliers:</p>";
+            data.results.forEach(supplier => {
+                responseBox.innerHTML += `<p>Name: ${supplier.name}, Number: ${supplier.number}</p>`;
+            });
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    });
+
+    document.getElementById('getSectorsBtn').addEventListener('click', function() {
+        let url = "https://167.koronacloud.com/web/api/v3/accounts/dd0b749a-56f5-4185-a782-590230a8530f/sectors";
+        let username = "support";
+        let password = "support";
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa(username + ":" + password)
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            let responseBox = document.getElementById('serverResponse');
+            responseBox.innerHTML = "<p>Sectors:</p>";
+            data.results.forEach(sector => {
+                responseBox.innerHTML += `<p>Name: ${sector.name}, Number: ${sector.number}</p>`;
+            });
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    });
+
+    // Auto-fill product number field on page load
+    window.addEventListener('DOMContentLoaded', function() {
+        let numberField = document.getElementById('number');
+        numberField.value = Math.floor(1000000 + Math.random() * 9000000).toString();
+    });
+</script>
+
+</body>
+</html>
